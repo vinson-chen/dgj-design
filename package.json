@@ -1,0 +1,52 @@
+{
+  "name": "dgj-design",
+  "version": "0.1.1",
+  "description": "Design system based on Ant Design 5 with DGJ tokens.",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist",
+    "demo": "npm run build && cd demo && npm install && npm run dev",
+    "lint": "echo \"no linter configured\"",
+    "test": "echo \"no tests yet\"",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run clean && npm run build",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "keywords": [
+    "design-system",
+    "antd",
+    "react",
+    "tokens"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "antd": ">=5.0.0 <6.0.0"
+  },
+  "dependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "antd": "^5.22.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
