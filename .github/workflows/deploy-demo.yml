@@ -21,13 +21,13 @@ jobs:
           cache: "npm"
 
       - name: Install root dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build dgj-design
         run: npm run build
 
       - name: Install demo dependencies
-        run: cd demo && npm ci
+        run: cd demo && npm install
 
       - name: Build demo
         run: cd demo && npm run build
