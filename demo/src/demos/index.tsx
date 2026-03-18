@@ -67,6 +67,7 @@ import ProgressDemo from './ProgressDemo';
 import ResultDemo from './ResultDemo';
 import SkeletonDemo from './SkeletonDemo';
 import SpinDemo from './SpinDemo';
+import ConfigProviderDemo from './ConfigProviderDemo';
 import EmptyDemo from './EmptyDemo';
 
 const keyToLabel: Record<string, string> = {};
@@ -144,5 +145,6 @@ export function DemoContent({ selectedKey }: { selectedKey: string }) {
   if (selectedKey === 'result') return <ResultDemo />;
   if (selectedKey === 'skeleton') return <SkeletonDemo />;
   if (selectedKey === 'spin') return <SpinDemo />;
+  if (selectedKey === 'config-provider') return <ConfigProviderDemo />;
   return <EmptyDemo componentName={getComponentLabel(selectedKey)} />;
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, PropsWithChildren } from 'react';
 import { ConfigProvider, type ConfigProviderProps } from 'antd';
+import zhCN from 'antd/locale/zh_CN';
 import { buildAntdTheme } from '../theme/buildAntdTheme';
 import '../icons/iconfont.css';
 
@@ -32,6 +33,7 @@ export const DgjConfigProvider: React.FC<PropsWithChildren<DgjConfigProviderProp
 
   return (
     <ConfigProvider
+      locale={zhCN}
       theme={theme}
       {...rest}
     >
