@@ -3,6 +3,7 @@ import { ConfigProvider, type ConfigProviderProps } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { buildAntdTheme } from '../theme/buildAntdTheme';
 import '../icons/iconfont.css';
+import '../styles/antdButtonIconPatch.css';
 
 export interface DgjConfigProviderProps extends Omit<ConfigProviderProps, 'theme'> {
   /**

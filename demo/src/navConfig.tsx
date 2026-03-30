@@ -121,6 +121,16 @@ export const navGroups: NavGroup[] = [
       { key: 'util', label: 'Util 工具类' },
     ],
   },
+  {
+    category: '业务组件',
+    items: [
+      { key: 'dispatch-sider-nav', label: 'DispatchSiderNav 导航区' },
+      { key: 'dispatch-filter-area', label: 'FilterArea 筛选区' },
+      { key: 'switch-area', label: 'SwitchArea 切换区' },
+      { key: 'operation-bar', label: 'OperationBar 操作区' },
+      { key: 'biz-table', label: 'BizTable 表格区' },
+    ],
+  },
 ];
 
 export const defaultSelectedKey = 'overview';

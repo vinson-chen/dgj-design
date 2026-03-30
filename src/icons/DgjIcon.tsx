@@ -10,11 +10,24 @@ export interface DgjIconProps extends Omit<React.HTMLAttributes<HTMLElement>, 'c
   fontSize?: number | string;
 }
 
+const ICON_TYPE_ALIASES: Record<string, string> = {
+  // iconfont occasionally prefixes some glyph names with "a-"
+  'chevron-left.double': 'a-chevron-leftdouble',
+  'chevron-right.double': 'a-chevron-rightdouble',
+  'order-adjustment.column': 'a-order-adjustmentcolumn',
+  // keep common semantic names working in demos/business code
+  info: 'info-circle',
+  warning: 'error-triangle',
+  question: 'help-circle',
+  clock: 'time',
+};
+
 const DgjIcon = forwardRef<HTMLElement, DgjIconProps>(function DgjIcon(
   { type, className = '', style, fontSize, ...rest },
   ref
 ) {
-  const iconClassName = `iconfont icon-${type} ${className}`.trim();
+  const resolvedType = ICON_TYPE_ALIASES[type] ?? type;
+  const iconClassName = `iconfont icon-${resolvedType} ${className}`.trim();
   const combinedStyle = { ...style, ...(fontSize != null ? { fontSize } : {}) };
   return (
     <i

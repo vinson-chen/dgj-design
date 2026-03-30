@@ -27,7 +27,12 @@ export const dgjTokens = {
       },
       fill: {
         default: 'rgba(0,0,0,0.1)',
-        secondary: 'rgba(0,0,0,0.05)'
+        secondary: 'rgba(0,0,0,0.05)',
+        tertiary: 'rgba(0,0,0,0.02)',
+        /**
+         * 与 `color.menu.itemSlotFill` 一致（Figma Menu 实例 menu_item 槽位 / colorFillDK）
+         */
+        dk: '#3B424E'
       },
       text: {
         default: 'rgba(0,0,0,0.9)',
@@ -44,6 +49,23 @@ export const dgjTokens = {
         secondary: '#F0F1F2',
         split: 'rgba(0,0,0,0.05)'
       }
+    },
+    /**
+     * 侧栏 Menu：来自 Figma「Menu / menu 实例」（如 file DGJ-Design, node 465:15486）解析的色值与变量语义。
+     */
+    menu: {
+      /** 导航主栏背景 */
+      navBackground: '#424A57',
+      /** 顶栏（logo + 收起按钮行）背景 */
+      topNavBackground: '#FFFFFF',
+      /** 顶栏与菜单主体分割线 */
+      topNavBorder: '#E1E2E4',
+      /** 分组下子项区域槽背景（Figma：menu_item SLOT / colorFillDK） */
+      itemSlotFill: '#3B424E',
+      /** 暗色栏上次要文案、默认态图标（Figma 约 70% 白） */
+      textSecondaryOnNav: 'rgba(255,255,255,0.7)',
+      /** 暗色子项 hover 填充（Figma：10% 黑叠底） */
+      itemHoverOverlayOnNav: 'rgba(0,0,0,0.1)'
     },
     success: {
       bg: '#F4F9ED',

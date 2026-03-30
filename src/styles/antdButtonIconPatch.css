@@ -1,0 +1,34 @@
+/**
+ * Ant Design Button 图标对齐补丁。
+ *
+ * AntD 会把 icon 包在 `span.ant-btn-icon` 中；在部分字体/行高组合下该 span 的行盒高度
+ * 会导致图标相对文字“偏上”。这里统一将 icon 容器改为 flex 居中，保证全局一致。
+ */
+
+.ant-btn .ant-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* 按钮内容（图标与文字）统一使用 gap 控制间距 */
+.ant-btn {
+  gap: 8px;
+}
+
+/* dgj-design 的 iconfont 图标 */
+.ant-btn .ant-btn-icon .iconfont {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+/* 兼容可能传入的 svg/react-node */
+.ant-btn .ant-btn-icon > svg,
+.ant-btn .ant-btn-icon svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+

@@ -14,6 +14,7 @@ function getKeyFromHash(): string {
 
 export default function App() {
   const [selectedKey, setSelectedKey] = useState(getKeyFromHash);
+  const resolvedSelectedKey = allNavKeys.has(selectedKey) ? selectedKey : 'overview';
 
   const syncFromHash = useCallback(() => {
     setSelectedKey(getKeyFromHash());
@@ -23,6 +24,14 @@ export default function App() {
     window.addEventListener('hashchange', syncFromHash);
     return () => window.removeEventListener('hashchange', syncFromHash);
   }, [syncFromHash]);
+
+  useEffect(() => {
+    if (allNavKeys.has(selectedKey)) {
+      return;
+    }
+    setSelectedKey('overview');
+    window.location.hash = 'overview';
+  }, [selectedKey]);
 
   const handleSelect = useCallback((key: string) => {
     setSelectedKey(key);
@@ -76,7 +85,7 @@ export default function App() {
                   </div>
                 ) : null}
                 {group.items.map((item) => {
-                  const isSelected = selectedKey === item.key;
+                  const isSelected = resolvedSelectedKey === item.key;
                   return (
                     <button
                       key={item.key}
@@ -123,8 +132,17 @@ export default function App() {
             background: dgjTokens.color.neutral.background.layout,
           }}
         >
-          <div style={{ padding: 24, maxWidth: 900 }}>
-            <DemoContent selectedKey={selectedKey} />
+          <div
+            style={{
+              padding: 24,
+              maxWidth:
+                resolvedSelectedKey === 'dispatch-filter-area' ||
+                resolvedSelectedKey === 'switch-area'
+                  ? 1440
+                  : undefined,
+            }}
+          >
+            <DemoContent selectedKey={resolvedSelectedKey} />
           </div>
         </main>
       </div>

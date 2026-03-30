@@ -1,0 +1,110 @@
+{
+  "source": {
+    "figmaLink": "https://www.figma.com/design/a4w8JupybLqnEXPkxRs4wL/DGJ-Design?node-id=663-11500&t=GbwvUkmgYHG3vmT3-1",
+    "nodeId": "663:11500",
+    "generatedAt": "2026-03-24T08:34:18.535Z"
+  },
+  "summary": {
+    "nodeTypeCount": 7,
+    "colorCount": 9,
+    "iconCandidateCount": 2
+  },
+  "components": [
+    {
+      "figmaType": "INSTANCE",
+      "count": 176,
+      "suggestedComponent": "Button"
+    },
+    {
+      "figmaType": "TEXT",
+      "count": 78,
+      "suggestedComponent": "Typography"
+    },
+    {
+      "figmaType": "SLOT",
+      "count": 49,
+      "suggestedComponent": "待人工映射"
+    },
+    {
+      "figmaType": "FRAME",
+      "count": 35,
+      "suggestedComponent": "Layout"
+    },
+    {
+      "figmaType": "RECTANGLE",
+      "count": 6,
+      "suggestedComponent": "Card"
+    },
+    {
+      "figmaType": "COMPONENT",
+      "count": 1,
+      "suggestedComponent": "待人工映射"
+    },
+    {
+      "figmaType": "GROUP",
+      "count": 1,
+      "suggestedComponent": "待人工映射"
+    }
+  ],
+  "colors": [
+    {
+      "hex": "#000000",
+      "count": 65,
+      "tokenPath": "待人工映射 dgjTokens.*"
+    },
+    {
+      "hex": "#ffffff",
+      "count": 53,
+      "tokenPath": "待人工映射 dgjTokens.*"
+    },
+    {
+      "hex": "#424a57",
+      "count": 15,
+      "tokenPath": "待人工映射 dgjTokens.*"
+    },
+    {
+      "hex": "#0888ff",
+      "count": 9,
+      "tokenPath": "待人工映射 dgjTokens.*"
+    },
+    {
+      "hex": "#f0f1f2",
+      "count": 2,
+      "tokenPath": "待人工映射 dgjTokens.*"
+    },
+    {
+      "hex": "#ecf6ff",
+      "count": 2,
+      "tokenPath": "待人工映射 dgjTokens.*"
+    },
+    {
+      "hex": "#ea572e",
+      "count": 2,
+      "tokenPath": "待人工映射 dgjTokens.*"
+    },
+    {
+      "hex": "#fef2ef",
+      "count": 1,
+      "tokenPath": "待人工映射 dgjTokens.*"
+    },
+    {
+      "hex": "#73ac1f",
+      "count": 1,
+      "tokenPath": "待人工映射 dgjTokens.*"
+    }
+  ],
+  "icons": [
+    {
+      "figmaName": "🎰 icon",
+      "count": 29,
+      "dgjIconType": "help-circle",
+      "fallback": true
+    },
+    {
+      "figmaName": "icon",
+      "count": 14,
+      "dgjIconType": "help-circle",
+      "fallback": true
+    }
+  ]
+}

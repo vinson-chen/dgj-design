@@ -16,6 +16,7 @@
     "build": "tsup",
     "clean": "rm -rf dist",
     "demo": "npm run build && cd demo && npm install && npm run dev",
+    "page-case:extract": "node scripts/extract_figma_page_case.mjs",
     "lint": "echo \"no linter configured\"",
     "test": "echo \"no tests yet\"",
     "prepare": "npm run build",

@@ -1,0 +1,1 @@
+export { renderSwitchTabIcon } from './iconResolverView';

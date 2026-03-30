@@ -1,0 +1,27 @@
+/* 折叠条：hover 用 CSS，避免 React 状态与 token 重复书写 */
+.biz-filter-group-collapse-btn {
+  width: 64px;
+  height: 16px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 1px solid var(--filter-collapse-border);
+  background: #ffffff;
+  cursor: pointer;
+  color: var(--filter-collapse-color);
+}
+
+.biz-filter-group-collapse-btn:hover {
+  border-color: var(--filter-collapse-border-hover);
+  color: var(--filter-collapse-color-hover);
+}
+
+.biz-filter-group-collapse-btn .biz-filter-group-collapse-icon {
+  color: var(--filter-collapse-icon);
+}
+
+.biz-filter-group-collapse-btn:hover .biz-filter-group-collapse-icon {
+  color: var(--filter-collapse-icon-hover);
+}

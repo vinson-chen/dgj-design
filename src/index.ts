@@ -1,7 +1,11 @@
 export * from './theme/dgjTokens';
 export * from './theme/buildAntdTheme';
+export * from './theme/resolveTokenByValue';
 export * from './providers/DgjConfigProvider';
 export * from './icons';
+
+export { default as Pagination } from './Pagination';
+export type { PaginationProps } from 'antd';
 
 export {
   message,
@@ -21,9 +25,8 @@ export {
   Breadcrumb,
   Dropdown,
   Menu,
-  Pagination,
-  Steps,
   Tabs,
+  Steps,
   AutoComplete,
   Cascader,
   Checkbox,

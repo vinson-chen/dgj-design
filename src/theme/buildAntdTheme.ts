@@ -31,6 +31,8 @@ export function buildAntdTheme(tokens: DgjTokens = dgjTokens): ThemeConfig {
       colorTextSecondary: color.neutral.text.label,
       colorTextTertiary: color.neutral.text.description,
       colorTextQuaternary: color.neutral.text.placeholder,
+      colorIcon: color.neutral.text.icon,
+      colorIconHover: color.neutral.text.iconHover,
 
       // borders & split line
       colorBorder: color.neutral.border.default,
@@ -89,6 +91,35 @@ export function buildAntdTheme(tokens: DgjTokens = dgjTokens): ThemeConfig {
         fontSize: style.font.size.base,
         fontSizeLG: style.font.size.base,
         fontSizeSM: style.font.size.sm
+      },
+      Button: {
+        // 尺寸
+        controlHeight: size.controlHeight.md,
+        controlHeightLG: size.controlHeight.lg,
+        controlHeightSM: size.controlHeight.sm,
+        fontSize: style.font.size.base,
+        fontSizeLG: style.font.size.md,
+        fontSizeSM: style.font.size.sm,
+        borderRadius: style.borderRadius.md,
+        borderRadiusLG: style.borderRadius.lg,
+        borderRadiusSM: style.borderRadius.sm,
+        paddingContentHorizontal: 12,
+        paddingContentHorizontalSM: 8,
+        paddingContentHorizontalLG: 16,
+
+        // Default 按钮
+        defaultBg: 'transparent',
+        defaultHoverBg: color.neutral.fill.tertiary,
+        defaultActiveBg: color.neutral.fill.secondary,
+        defaultBorderColor: color.neutral.border.default,
+        defaultHoverBorderColor: color.neutral.border.default,
+        defaultActiveBorderColor: color.neutral.border.default,
+        defaultColor: color.neutral.text.default,
+        defaultHoverColor: color.neutral.text.default,
+        defaultActiveColor: color.neutral.text.default,
+
+        // Text 按钮
+        textHoverBg: color.neutral.fill.secondary
       }
     }
   };
