@@ -109,10 +109,10 @@ description: >-
 
 | 用途 | 路径 |
 |------|------|
-| 导航区菜单外壳与数据 | `demo/src/biz-components/menu/BizMenu.tsx` |
-| 分组 / 子项槽 | `demo/src/biz-components/menu/BizMenuGroup.tsx` |
-| 子项 | `demo/src/biz-components/menu/BizMenuItem.tsx` |
-| Figma 图标名解析 | `demo/src/biz-components/menu/figmaIconResolver.ts` |
+| 导航区菜单外壳与数据 | `packages/dgj-biz/src/menu/BizMenu.tsx` |
+| 分组 / 子项槽 | `packages/dgj-biz/src/menu/BizMenuGroup.tsx` |
+| 子项 | `packages/dgj-biz/src/menu/BizMenuItem.tsx` |
+| Figma 图标名解析 | `packages/dgj-biz/src/menu/figmaIconResolver.ts` |
 | 设计 token | `src/theme/dgjTokens.ts` |
 | 色值 + 场景反查 token | `src/theme/resolveTokenByValue.ts` |
 | 演示入口 | `demo/src/demos/BizMenuCaseDemo.tsx`、`demo/src/navConfig.tsx`（`dispatch-sider-nav`） |

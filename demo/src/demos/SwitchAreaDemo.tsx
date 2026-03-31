@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Button, Drawer, dgjTokens } from 'dgj-design';
-import SwitchTabs, { type SwitchTabItemData } from '../biz-components/switch-tabs/SwitchTabs';
+import { SwitchTabs, type SwitchTabItemData } from 'dgj-biz';
 
 export default function SwitchAreaDemo() {
   const [storeActiveKey, setStoreActiveKey] = useState('精选平台');

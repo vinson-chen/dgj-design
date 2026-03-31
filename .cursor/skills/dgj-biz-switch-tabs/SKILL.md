@@ -5,7 +5,7 @@ description: 在 dgj-design demo 中基于 Figma 落地业务切换区（tabs/.t
 
 # dgj-design：业务切换区（Switch Tabs）落地规范
 
-面向 `demo/src/biz-components/switch-tabs` 场景。目标是快速做出“高还原 + 可维护 + 可回退”的业务切换区。
+面向 `packages/dgj-biz/src/switch-tabs` 场景。目标是快速做出“高还原 + 可维护 + 可回退”的业务切换区。
 
 ## 1) 推荐实现策略
 
@@ -20,7 +20,7 @@ description: 在 dgj-design demo 中基于 Figma 落地业务切换区（tabs/.t
    - 避免与 AntD `:hover/:active/:focus` 规则对抗
 3. 图标规则固定：
    - `svg` / 无扩展：走 `DgjIcon`
-   - `jpg/png/gif`：走 `store_logo` 同名资源
+   - `jpg/png/gif`：走 `packages/dgj-biz/assets/store_logo` 同名资源
    - 未命中回退：图片 `otherstore`，svg `help-circle`
 4. 宽度适配按“操作区 more”思路实现：
    - 测量容器宽度 + 每项宽度 + more 按钮宽度
@@ -29,13 +29,13 @@ description: 在 dgj-design demo 中基于 Figma 落地业务切换区（tabs/.t
 
 ## 2) 目录与职责
 
-- `demo/src/biz-components/switch-tabs/SwitchTabs.tsx`
+- `packages/dgj-biz/src/switch-tabs/SwitchTabs.tsx`
   - 负责 tab 渲染、active 管理、ink-bar 动效、收纳逻辑
-- `demo/src/biz-components/switch-tabs/SwitchTabs.css`
+- `packages/dgj-biz/src/switch-tabs/SwitchTabs.css`
   - 负责状态样式、底描边、下划线覆盖关系
-- `demo/src/biz-components/switch-tabs/iconResolver.ts`
+- `packages/dgj-biz/src/switch-tabs/iconResolver.ts`
   - 兼容入口（避免 HMR 旧路径 404）
-- `demo/src/biz-components/switch-tabs/iconResolverView.tsx`
+- `packages/dgj-biz/src/switch-tabs/iconResolverView.tsx`
   - 图标解析与按需加载实现
 - `demo/src/demos/SwitchAreaDemo.tsx`
   - `store_tabs` / `state_tabs` 示例与“更多平台”抽屉动作

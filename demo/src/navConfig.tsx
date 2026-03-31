@@ -129,6 +129,7 @@ export const navGroups: NavGroup[] = [
       { key: 'switch-area', label: 'SwitchArea 切换区' },
       { key: 'operation-bar', label: 'OperationBar 操作区' },
       { key: 'biz-table', label: 'BizTable 表格区' },
+      { key: 'list-page-shell', label: 'ListPageShell 列表页串联' },
     ],
   },
 ];

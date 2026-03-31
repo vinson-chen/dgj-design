@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "dgj-biz": "file:../packages/dgj-biz",
     "dgj-design": "file:..",
     "antd": "^5.22.0",
     "dayjs": "^1.11.11",

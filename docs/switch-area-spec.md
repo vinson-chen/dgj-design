@@ -27,7 +27,7 @@
 ## 3. 图标规则
 
 - 当 `icon` 识别为 `svg`（或无扩展名）时，解析为 `DgjIcon` 的 `type`。
-- 当 `icon` 识别为 `jpg/png/gif` 时，从 `store_logo` 目录按同名资源加载。
+- 当 `icon` 识别为 `jpg/png/gif` 时，从 `packages/dgj-biz/assets/store_logo` 按同名资源加载（构建生成 `storeLogoUrls`）。
 - 图片资源未命中时，回退到 `otherstore.jpg`；svg 未命中时，回退 `help-circle`。
 
 ---
@@ -36,7 +36,7 @@
 
 ### 4.1 store_tabs（带图标）
 
-- 图标默认读取 `store_logo` 同名图片（如 `douyin.jpg`、`pdd.jpg`）。
+- 图标默认读取 `packages/dgj-biz/assets/store_logo` 同名图片（如 `douyin.jpg`、`pdd.jpg`）。
 - 最后一项“更多平台”为动作项：点击后在页面右侧打开 Drawer（占位内容可后续替换）。
 
 ### 4.2 state_tabs（无图标）
@@ -48,8 +48,8 @@
 
 ## 5. 代码落点（demo）
 
-- 组件：`demo/src/biz-components/switch-tabs/SwitchTabs.tsx`
-- 图标解析：`demo/src/biz-components/switch-tabs/iconResolver.ts`
+- 组件：`packages/dgj-biz/src/switch-tabs/SwitchTabs.tsx`
+- 图标解析：`packages/dgj-biz/src/switch-tabs/iconResolver.ts`
 - Demo：`demo/src/demos/SwitchAreaDemo.tsx`
 
 ---

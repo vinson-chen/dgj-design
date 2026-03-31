@@ -1,6 +1,6 @@
 import React from 'react';
 import { Space, dgjTokens } from 'dgj-design';
-import BizMenuGroup from '../biz-components/menu/BizMenuGroup';
+import { BizMenuGroup } from 'dgj-biz';
 
 const items = [
   { key: 'self-goods', label: '自营商品', iconName: 'catalog' },

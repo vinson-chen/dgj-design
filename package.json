@@ -1,6 +1,9 @@
 {
   "name": "dgj-design",
   "version": "0.1.1",
+  "workspaces": [
+    "packages/*"
+  ],
   "description": "Design system based on Ant Design 5 with DGJ tokens.",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -14,8 +17,9 @@
   },
   "scripts": {
     "build": "tsup",
+    "build:dgj-biz": "npm run build -w dgj-biz",
     "clean": "rm -rf dist",
-    "demo": "npm run build && cd demo && npm install && npm run dev",
+    "demo": "npm run build && npm run build:dgj-biz && cd demo && npm install && npm run dev",
     "page-case:extract": "node scripts/extract_figma_page_case.mjs",
     "lint": "echo \"no linter configured\"",
     "test": "echo \"no tests yet\"",

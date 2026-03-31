@@ -4,7 +4,7 @@ import {
   TableAreaConfigPanel,
   TableAreaTableInstance,
   useTableAreaDemoState,
-} from '../biz-components/TableArea';
+} from 'dgj-biz';
 
 const sectionBox: React.CSSProperties = {
   background: dgjTokens.color.neutral.background.layout,

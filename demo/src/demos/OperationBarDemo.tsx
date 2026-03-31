@@ -9,8 +9,7 @@ import {
   dgjTokens,
   message,
 } from 'dgj-design';
-import OperationBar from '../biz-components/OperationBar';
-import OverflowActions, { type OverflowActionItem } from '../biz-components/operation/OverflowActions';
+import { OperationBar, OverflowActions, type OverflowActionItem } from 'dgj-biz';
 
 const actionGapPx = 8;
 

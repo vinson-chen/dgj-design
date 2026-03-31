@@ -1,6 +1,6 @@
 import React from 'react';
 import { Space, dgjTokens } from 'dgj-design';
-import BizMenuItem from '../biz-components/menu/BizMenuItem';
+import { BizMenuItem } from 'dgj-biz';
 
 export default function BizMenuItemSpecDemo() {
   return (

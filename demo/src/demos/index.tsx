@@ -74,6 +74,7 @@ import SwitchAreaDemo from './SwitchAreaDemo';
 import OperationBarDemo from './OperationBarDemo';
 import BizTableDemo from './BizTableDemo';
 import EmptyDemo from './EmptyDemo';
+import BizListPageCompositionDemo from './BizListPageCompositionDemo';
 
 const keyToLabel: Record<string, string> = {};
 navGroups.forEach((g) => g.items.forEach((it) => { keyToLabel[it.key] = it.label; }));
@@ -156,5 +157,6 @@ export function DemoContent({ selectedKey }: { selectedKey: string }) {
   if (selectedKey === 'switch-area') return <SwitchAreaDemo />;
   if (selectedKey === 'operation-bar') return <OperationBarDemo />;
   if (selectedKey === 'biz-table') return <BizTableDemo />;
+  if (selectedKey === 'list-page-shell') return <BizListPageCompositionDemo />;
   return <EmptyDemo componentName={getComponentLabel(selectedKey)} />;
 }

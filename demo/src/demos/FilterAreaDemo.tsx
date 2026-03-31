@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { dgjTokens, message } from 'dgj-design';
-import FilterGroup, {
-  type FilterFieldConfig,
-} from '../biz-components/FilterGroup';
+import { FilterGroup, type FilterFieldConfig } from 'dgj-biz';
 
 const statusOptions = [
   { label: '全部', value: '' },

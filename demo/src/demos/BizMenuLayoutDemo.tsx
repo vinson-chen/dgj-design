@@ -1,6 +1,6 @@
 import React from 'react';
 import { dgjTokens } from 'dgj-design';
-import BizMenu from '../biz-components/menu/BizMenu';
+import { BizMenu } from 'dgj-biz';
 
 export default function BizMenuLayoutDemo() {
   return (

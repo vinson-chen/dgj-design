@@ -137,3 +137,6 @@
 | 版本 | 日期 | 说明 |
 |------|------|------|
 | v0.1 | 2026-03-30 | 初稿，待用户确认后执行 |
+| v0.2 | 2026-03-30 | **阶段 1 已落地**：根目录 `workspaces: packages/*`，子包 `packages/dgj-biz`（tsup + 占位导出 + peer），脚本 `build:dgj-biz`；子包 `devDependencies` 含 `dgj-design: file:../..` 以满足本地安装 |
+| v0.3 | 2026-03-30 | **阶段 2 已落地**：业务组件迁入 `packages/dgj-biz/src`；店铺图标仅保留于 `packages/dgj-biz/assets/store_logo`，构建时生成 `storeLogoUrls`；Demo 依赖 `file:../packages/dgj-biz` 并引入 `dgj-biz/style.css`；根目录 `npm run demo` 会先 `build:dgj-biz` |
+| v0.4 | 2026-03-30 | **阶段 4 已落地（阶段 4.1 + 4.2）**：新增 `ListPageShell 列表页串联` 页面，把筛选 + 切换 + 操作 + 表格壳串联；补充 `docs/version-matrix-v0.md` 用于集成验证口径。 |

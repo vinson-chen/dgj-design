@@ -137,7 +137,8 @@ export default function App() {
               padding: 24,
               maxWidth:
                 resolvedSelectedKey === 'dispatch-filter-area' ||
-                resolvedSelectedKey === 'switch-area'
+                resolvedSelectedKey === 'switch-area' ||
+                resolvedSelectedKey === 'list-page-shell'
                   ? 1440
                   : undefined,
             }}

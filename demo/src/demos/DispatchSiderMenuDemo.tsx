@@ -1,6 +1,6 @@
 import React from 'react';
 import { dgjTokens } from 'dgj-design';
-import DispatchSiderMenu from '../biz-components/DispatchSiderMenu';
+import { DispatchSiderMenu } from 'dgj-biz';
 
 export default function DispatchSiderMenuDemo() {
   return (
