@@ -26,6 +26,9 @@ jobs:
       - name: Build dgj-design
         run: npm run build
 
+      - name: Build dgj-biz
+        run: npm run build:dgj-biz
+
       - name: Install demo dependencies
         run: cd demo && npm install
 
