@@ -37,7 +37,7 @@ export const dgjTokens = {
       text: {
         default: 'rgba(0,0,0,0.9)',
         label: 'rgba(0,0,0,0.7)',
-        description: 'rgba(0,0,0,0.5)',
+        description: 'rgba(0, 0, 0, 0.5)',
         placeholder: 'rgba(0,0,0,0.3)',
         disabled: 'rgba(0,0,0,0.3)',
         icon: 'rgba(0,0,0,0.5)',

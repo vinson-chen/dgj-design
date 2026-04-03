@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 export function useRowSelection(bodyRowCount: number) {
   const [checkedByBodyRow, setCheckedByBodyRow] = useState<Record<number, boolean>>({});
@@ -28,7 +28,6 @@ export function useRowSelection(bodyRowCount: number) {
   return {
     checkedByBodyRow,
     setCheckedByBodyRow,
-    checkedCount,
     headerAllChecked,
     headerIndeterminate,
     toggleAllHeader,
@@ -39,14 +38,12 @@ export function useColumnResize(gridMax: number, minTextColW: number) {
   const [colWidths, setColWidths] = useState<Array<number | null>>(
     () => Array.from({ length: gridMax }, () => null)
   );
-  const isResizingRef = useRef(false);
 
   const onColumnResizeStart = useCallback(
     (colIndex: number) => (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
 
-      isResizingRef.current = true;
       const startX = e.clientX;
       const startW = colWidths[colIndex] ?? 160;
 
@@ -60,7 +57,6 @@ export function useColumnResize(gridMax: number, minTextColW: number) {
       };
 
       const onUp = () => {
-        isResizingRef.current = false;
         window.removeEventListener('mousemove', onMove);
         window.removeEventListener('mouseup', onUp);
       };
@@ -71,5 +67,5 @@ export function useColumnResize(gridMax: number, minTextColW: number) {
     [colWidths, minTextColW]
   );
 
-  return { colWidths, setColWidths, isResizingRef, onColumnResizeStart };
+  return { colWidths, onColumnResizeStart };
 }

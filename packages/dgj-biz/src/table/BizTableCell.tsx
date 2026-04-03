@@ -17,10 +17,14 @@ export interface BizTableCellProps {
   onColumnResizeStart?: (event: React.MouseEvent) => void;
   /** 非 zoom 分支内容上下 padding */
   contentPaddingY?: number;
+  /** 非 zoom 分支内容左右 padding */
+  contentPaddingX?: number;
   /** 非 zoom 分支内容垂直对齐 */
   contentAlignY?: 'center' | 'flex-start';
   /** 是否为最后一行（控制底部分割线） */
   isLastRow?: boolean;
+  /** 是否显示右侧描边（颜色与底部分割线一致） */
+  showRightBorder?: boolean;
   /** 冻结列：避免 sticky 叠层时透明背景透出 */
   isFrozen?: boolean;
   children: React.ReactNode;
@@ -62,8 +66,10 @@ export function BizTableCell({
   zoom = false,
   onColumnResizeStart,
   contentPaddingY = 8,
+  contentPaddingX = 12,
   contentAlignY = 'center',
   isLastRow = false,
+  showRightBorder = false,
   isFrozen = false,
   children,
   className,
@@ -82,9 +88,6 @@ export function BizTableCell({
     return tbodyBorder(hoverEffective, active);
   }, [variant, hoverEffective, active]);
 
-  const contentPadRight =
-    variant === 'thead' && !zoom && onColumnResizeStart ? 18 : 12;
-
   const zoomStrokeColor = hoverEffective
     ? dgjTokens.color.primary.default
     : dgjTokens.color.neutral.border.default;
@@ -98,10 +101,17 @@ export function BizTableCell({
     height: '100%',
     alignSelf: 'stretch',
     background: bg,
-    borderRight: undefined,
+    borderRight: showRightBorder ? `1px solid ${borderColor}` : undefined,
     borderBottom: isLastRow ? undefined : `1px solid ${borderColor}`,
     ...style,
   };
+
+  const contentPaddingRight =
+    variant === 'thead' && zoom
+      ? 14
+      : variant === 'thead' && !zoom && onColumnResizeStart
+        ? 18
+        : contentPaddingX;
 
   const contentSlotStyle: React.CSSProperties = {
     position: 'relative',
@@ -112,8 +122,8 @@ export function BizTableCell({
     alignItems: contentAlignY,
     paddingTop: contentPaddingY,
     paddingBottom: contentPaddingY,
-    paddingLeft: 12,
-    paddingRight: contentPadRight,
+    paddingLeft: contentPaddingX,
+    paddingRight: contentPaddingRight,
   };
 
   return (
@@ -123,12 +133,7 @@ export function BizTableCell({
       onMouseEnter={() => setCellHovered(true)}
       onMouseLeave={() => setCellHovered(false)}
     >
-      <div
-        style={{
-          ...contentSlotStyle,
-          paddingRight: variant === 'thead' && zoom ? 14 : contentPadRight,
-        }}
-      >
+      <div style={contentSlotStyle}>
         {children}
 
         {variant === 'thead' && zoom ? (
