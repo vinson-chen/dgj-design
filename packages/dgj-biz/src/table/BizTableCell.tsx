@@ -25,6 +25,10 @@ export interface BizTableCellProps {
   isLastRow?: boolean;
   /** 是否显示右侧描边（颜色与底部分割线一致） */
   showRightBorder?: boolean;
+  /**
+   * 内容槽纵向居中并去掉上下 padding（窄列表头图标等，避免多层 flex + padding 导致视觉上偏上）
+   */
+  compactVerticalContent?: boolean;
   /** 冻结列：避免 sticky 叠层时透明背景透出 */
   isFrozen?: boolean;
   children: React.ReactNode;
@@ -70,6 +74,7 @@ export function BizTableCell({
   contentAlignY = 'center',
   isLastRow = false,
   showRightBorder = false,
+  compactVerticalContent = false,
   isFrozen = false,
   children,
   className,
@@ -113,18 +118,34 @@ export function BizTableCell({
         ? 18
         : contentPaddingX;
 
-  const contentSlotStyle: React.CSSProperties = {
-    position: 'relative',
-    minWidth: 0,
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: contentAlignY,
-    paddingTop: contentPaddingY,
-    paddingBottom: contentPaddingY,
-    paddingLeft: contentPaddingX,
-    paddingRight: contentPaddingRight,
-  };
+  const contentSlotStyle: React.CSSProperties = compactVerticalContent
+    ? {
+        position: 'relative',
+        minWidth: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingLeft: contentPaddingX,
+        paddingRight: contentPaddingRight,
+        boxSizing: 'border-box',
+      }
+    : {
+        position: 'relative',
+        minWidth: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: contentAlignY,
+        paddingTop: contentPaddingY,
+        paddingBottom: contentPaddingY,
+        paddingLeft: contentPaddingX,
+        paddingRight: contentPaddingRight,
+      };
 
   return (
     <div

@@ -214,14 +214,24 @@ export function TableAreaTableInstance(model: TableAreaDemoModel) {
   return (
     <div
       style={{
-        width: '100%',
+        display: 'inline-block',
+        verticalAlign: 'top',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
         border: `1px solid ${dgjTokens.color.neutral.border.default}`,
         borderRadius: dgjTokens.style.borderRadius.md,
         overflowX: 'auto',
         background: dgjTokens.color.neutral.background.container,
       }}
     >
-      <TableRows
+      <div
+        style={{
+          width: 'max-content',
+          minWidth: rowMinWidth,
+          boxSizing: 'border-box',
+        }}
+      >
+        <TableRows
         rowCount={rowCount}
         colCount={colCount}
         rowMinWidth={rowMinWidth}
@@ -248,6 +258,7 @@ export function TableAreaTableInstance(model: TableAreaDemoModel) {
         onInsertColumn={insertColumn}
         insertLayoutTextColPx={enableInsertRowCol ? INSERT_MODE_TEXT_COL_PX : null}
       />
+      </div>
     </div>
   );
 }

@@ -144,6 +144,8 @@ export default function TableGridTextCell({
               flex: `0 0 ${insertColWidth}px`,
               minWidth: insertColWidth,
               display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
               position:
                 cfg.enableFreezeLastCol && cfg.enableInsertRowCol
                   ? 'sticky'
@@ -195,40 +197,49 @@ export default function TableGridTextCell({
           (cfg.enableFreezeLastCol && cfg.enableInsertRowCol && isInsertColPlaceholder)
         }
         showRightBorder={
-          !isHeader &&
-          !isInsertColPlaceholder &&
-          !(cfg.enableFreezeFirstCol && colIndex === 0) &&
-          (isLastTextColBeforeInsert
-            ? true
-            : cfg.enableBodyCellRightBorder &&
-              !isInsertRowPlaceholder &&
-              !shouldHideRightBorderForFrozenLastCol &&
-              !shouldHideRightBorderForLastUnfrozenBeforeFrozenLast)
+          isInsertColPlaceholder
+            ? false
+            : !isHeader &&
+              !(cfg.enableFreezeFirstCol && colIndex === 0) &&
+              (isLastTextColBeforeInsert
+                ? true
+                : cfg.enableBodyCellRightBorder &&
+                  !isInsertRowPlaceholder &&
+                  !shouldHideRightBorderForFrozenLastCol &&
+                  !shouldHideRightBorderForLastUnfrozenBeforeFrozenLast)
         }
+        compactVerticalContent={isInsertColPlaceholder && isHeader}
         contentPaddingY={isHeader ? 8 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_Y}
         contentPaddingX={isHeader ? 12 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_X}
         contentAlignY={!isHeader && !cfg.enableVerticalCenter ? 'flex-start' : 'center'}
         style={
-          isEditing
-            ? {
-                maxHeight: EDIT_CELL_MAX_HEIGHT_PX,
-                overflow: 'hidden',
-              }
-            : isEditableBodyDisplayCell
+          isInsertColPlaceholder
+            ? { flex: 1, minHeight: 0, width: '100%' }
+            : isEditing
               ? {
-                  maxHeight: DISPLAY_CELL_MAX_HEIGHT_PX,
+                  maxHeight: EDIT_CELL_MAX_HEIGHT_PX,
                   overflow: 'hidden',
                 }
-              : undefined
+              : isEditableBodyDisplayCell
+                ? {
+                    maxHeight: DISPLAY_CELL_MAX_HEIGHT_PX,
+                    overflow: 'hidden',
+                  }
+                : undefined
         }
       >
         {isHeader ? (
           isInsertColPlaceholder ? (
-            <div
-              style={{ display: 'flex', justifyContent: 'center', width: '100%', cursor: 'pointer' }}
-            >
-              <DgjIcon type="add" fontSize={16} style={{ color: dgjTokens.color.neutral.text.icon }} />
-            </div>
+            <DgjIcon
+              type="add"
+              fontSize={16}
+              style={{
+                color: dgjTokens.color.neutral.text.icon,
+                lineHeight: 1,
+                display: 'block',
+                cursor: 'pointer',
+              }}
+            />
           ) : (
             <Typography.Text style={{ ...tableTextStyle, fontWeight: 500 }}>
               列 {colIndex + 1}
