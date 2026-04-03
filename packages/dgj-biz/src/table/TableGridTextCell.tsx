@@ -68,6 +68,17 @@ export default function TableGridTextCell({
 
   const canResizeHeaderTextCol = isHeader && cfg.enableColumnResize && colIndex < cfg.colCount;
 
+  const showTextColRightBorder =
+    !isInsertColPlaceholder &&
+    !isHeader &&
+    !(cfg.enableFreezeFirstCol && colIndex === 0) &&
+    (isLastTextColBeforeInsert
+      ? true
+      : cfg.enableBodyCellRightBorder &&
+        !isInsertRowPlaceholder &&
+        !shouldHideRightBorderForFrozenLastCol &&
+        !shouldHideRightBorderForLastUnfrozenBeforeFrozenLast);
+
   const isBody = rowIndex > 0;
   const isEditableBodyCell =
     cfg.enableEditMode &&
@@ -144,8 +155,6 @@ export default function TableGridTextCell({
               flex: `0 0 ${insertColWidth}px`,
               minWidth: insertColWidth,
               display: 'flex',
-              flexDirection: 'column',
-              minHeight: 0,
               position:
                 cfg.enableFreezeLastCol && cfg.enableInsertRowCol
                   ? 'sticky'
@@ -190,42 +199,30 @@ export default function TableGridTextCell({
         active={cellActive}
         zoom={canResizeHeaderTextCol}
         onColumnResizeStart={canResizeHeaderTextCol ? cfg.onColumnResizeStart(colIndex) : undefined}
-        isLastRow={isHeader || !isInsertColPlaceholder ? isLastRow : true}
+        isLastRow={isLastRow}
+        suppressBottomBorder={isInsertColPlaceholder && !isHeader}
         isFrozen={
           (cfg.enableFreezeFirstCol && colIndex === 0) ||
           (cfg.enableFreezeLastCol && colIndex === cfg.colCount - 1) ||
           (cfg.enableFreezeLastCol && cfg.enableInsertRowCol && isInsertColPlaceholder)
         }
-        showRightBorder={
-          isInsertColPlaceholder
-            ? false
-            : !isHeader &&
-              !(cfg.enableFreezeFirstCol && colIndex === 0) &&
-              (isLastTextColBeforeInsert
-                ? true
-                : cfg.enableBodyCellRightBorder &&
-                  !isInsertRowPlaceholder &&
-                  !shouldHideRightBorderForFrozenLastCol &&
-                  !shouldHideRightBorderForLastUnfrozenBeforeFrozenLast)
-        }
+        showRightBorder={showTextColRightBorder}
         compactVerticalContent={isInsertColPlaceholder && isHeader}
         contentPaddingY={isHeader ? 8 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_Y}
         contentPaddingX={isHeader ? 12 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_X}
         contentAlignY={!isHeader && !cfg.enableVerticalCenter ? 'flex-start' : 'center'}
         style={
-          isInsertColPlaceholder
-            ? { flex: 1, minHeight: 0, width: '100%' }
-            : isEditing
+          isEditing
+            ? {
+                maxHeight: EDIT_CELL_MAX_HEIGHT_PX,
+                overflow: 'hidden',
+              }
+            : isEditableBodyDisplayCell
               ? {
-                  maxHeight: EDIT_CELL_MAX_HEIGHT_PX,
+                  maxHeight: DISPLAY_CELL_MAX_HEIGHT_PX,
                   overflow: 'hidden',
                 }
-              : isEditableBodyDisplayCell
-                ? {
-                    maxHeight: DISPLAY_CELL_MAX_HEIGHT_PX,
-                    overflow: 'hidden',
-                  }
-                : undefined
+              : undefined
         }
       >
         {isHeader ? (

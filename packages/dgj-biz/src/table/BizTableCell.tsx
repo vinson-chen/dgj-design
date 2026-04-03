@@ -31,6 +31,8 @@ export interface BizTableCellProps {
   compactVerticalContent?: boolean;
   /** 冻结列：避免 sticky 叠层时透明背景透出 */
   isFrozen?: boolean;
+  /** 为 true 时不画底部分割线（如插入列表体整列连成一条） */
+  suppressBottomBorder?: boolean;
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -76,6 +78,7 @@ export function BizTableCell({
   showRightBorder = false,
   compactVerticalContent = false,
   isFrozen = false,
+  suppressBottomBorder = false,
   children,
   className,
   style,
@@ -106,9 +109,13 @@ export function BizTableCell({
     height: '100%',
     alignSelf: 'stretch',
     background: bg,
-    borderRight: showRightBorder ? `1px solid ${borderColor}` : undefined,
-    borderBottom: isLastRow ? undefined : `1px solid ${borderColor}`,
     ...style,
+    borderRight: showRightBorder ? `1px solid ${borderColor}` : undefined,
+    borderBottom: suppressBottomBorder
+      ? 'none'
+      : isLastRow
+        ? undefined
+        : `1px solid ${borderColor}`,
   };
 
   const contentPaddingRight =

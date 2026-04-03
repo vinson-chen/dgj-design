@@ -48,7 +48,7 @@ export default function TableGridRow({ rowIndex }: TableGridRowProps) {
       }}
       style={{
         display: 'flex',
-        width: 'max-content',
+        width: cfg.enableInsertRowCol ? 'max-content' : '100%',
         minWidth: cfg.rowMinWidth,
         alignItems: 'stretch',
         cursor: isHeader || isInsertRowPlaceholder ? 'default' : 'pointer',

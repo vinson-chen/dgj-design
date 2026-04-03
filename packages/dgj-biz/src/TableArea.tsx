@@ -33,13 +33,20 @@ export function useTableAreaDemoState() {
     toggleAllHeader,
   } = useRowSelection(bodyRowCount);
 
-  const rowMinWidth = useMemo(
-    () =>
-      NARROW_W +
-      colCount * (enableInsertRowCol ? INSERT_MODE_TEXT_COL_PX : MIN_TEXT_COL_W) +
-      (enableInsertRowCol ? NARROW_W : 0),
-    [colCount, enableInsertRowCol]
-  );
+  const rowMinWidth = useMemo(() => {
+    if (!enableInsertRowCol) {
+      return NARROW_W + colCount * MIN_TEXT_COL_W;
+    }
+    let textCols = 0;
+    for (let i = 0; i < colCount; i += 1) {
+      const w =
+        enableColumnResize && colWidths[i] != null
+          ? colWidths[i]!
+          : INSERT_MODE_TEXT_COL_PX;
+      textCols += w;
+    }
+    return NARROW_W + textCols + NARROW_W;
+  }, [colCount, colWidths, enableColumnResize, enableInsertRowCol]);
 
   const insertRow = useCallback(() => {
     setRowCount((prev) => Math.min(GRID_MAX, prev + 1));
@@ -211,54 +218,62 @@ export function TableAreaTableInstance(model: TableAreaDemoModel) {
     insertColumn,
   } = model;
 
+  const rows = (
+    <TableRows
+      rowCount={rowCount}
+      colCount={colCount}
+      rowMinWidth={rowMinWidth}
+      narrowWidth={narrowWidth}
+      minTextColWidth={minTextColWidth}
+      enableColumnResize={enableColumnResize}
+      enableVerticalCenter={enableVerticalCenter}
+      enableFreezeFirstCol={enableFreezeFirstCol}
+      enableFreezeLastCol={enableFreezeLastCol}
+      enableBodyCellRightBorder={enableBodyCellRightBorder}
+      enableShowRowIndex={enableShowRowIndex}
+      enableInsertRowCol={enableInsertRowCol}
+      enableEditMode={enableEditMode}
+      hoveredRowIndex={hoveredRowIndex}
+      setHoveredRowIndex={setHoveredRowIndex}
+      checkedByBodyRow={checkedByBodyRow}
+      setCheckedByBodyRow={setCheckedByBodyRow}
+      headerAllChecked={headerAllChecked}
+      headerIndeterminate={headerIndeterminate}
+      toggleAllHeader={toggleAllHeader}
+      colWidths={colWidths}
+      onColumnResizeStart={onColumnResizeStart}
+      onInsertRow={insertRow}
+      onInsertColumn={insertColumn}
+      insertLayoutTextColPx={enableInsertRowCol ? INSERT_MODE_TEXT_COL_PX : null}
+    />
+  );
+
+  const frame: React.CSSProperties = {
+    boxSizing: 'border-box',
+    border: `1px solid ${dgjTokens.color.neutral.border.default}`,
+    borderRadius: dgjTokens.style.borderRadius.md,
+    overflowX: 'auto',
+    background: dgjTokens.color.neutral.background.container,
+  };
+
   return (
     <div
       style={{
-        display: 'inline-block',
-        verticalAlign: 'top',
-        maxWidth: '100%',
-        boxSizing: 'border-box',
-        border: `1px solid ${dgjTokens.color.neutral.border.default}`,
-        borderRadius: dgjTokens.style.borderRadius.md,
-        overflowX: 'auto',
-        background: dgjTokens.color.neutral.background.container,
+        ...frame,
+        ...(enableInsertRowCol
+          ? {
+              display: 'inline-block',
+              verticalAlign: 'top',
+              maxWidth: '100%',
+            }
+          : { width: '100%' }),
       }}
     >
-      <div
-        style={{
-          width: 'max-content',
-          minWidth: rowMinWidth,
-          boxSizing: 'border-box',
-        }}
-      >
-        <TableRows
-        rowCount={rowCount}
-        colCount={colCount}
-        rowMinWidth={rowMinWidth}
-        narrowWidth={narrowWidth}
-        minTextColWidth={minTextColWidth}
-        enableColumnResize={enableColumnResize}
-        enableVerticalCenter={enableVerticalCenter}
-        enableFreezeFirstCol={enableFreezeFirstCol}
-        enableFreezeLastCol={enableFreezeLastCol}
-        enableBodyCellRightBorder={enableBodyCellRightBorder}
-        enableShowRowIndex={enableShowRowIndex}
-        enableInsertRowCol={enableInsertRowCol}
-        enableEditMode={enableEditMode}
-        hoveredRowIndex={hoveredRowIndex}
-        setHoveredRowIndex={setHoveredRowIndex}
-        checkedByBodyRow={checkedByBodyRow}
-        setCheckedByBodyRow={setCheckedByBodyRow}
-        headerAllChecked={headerAllChecked}
-        headerIndeterminate={headerIndeterminate}
-        toggleAllHeader={toggleAllHeader}
-        colWidths={colWidths}
-        onColumnResizeStart={onColumnResizeStart}
-        onInsertRow={insertRow}
-        onInsertColumn={insertColumn}
-        insertLayoutTextColPx={enableInsertRowCol ? INSERT_MODE_TEXT_COL_PX : null}
-      />
-      </div>
+      {enableInsertRowCol ? (
+        <div style={{ width: 'max-content', minWidth: rowMinWidth, boxSizing: 'border-box' }}>{rows}</div>
+      ) : (
+        rows
+      )}
     </div>
   );
 }
