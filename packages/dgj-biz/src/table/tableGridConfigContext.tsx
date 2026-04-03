@@ -1,9 +1,9 @@
 import React, { createContext, useContext } from 'react';
-import type { TableRowsProps } from './tableGridTypes';
+import type { TableGridConfigValue } from './tableGridTypes';
 
-const TableGridConfigContext = createContext<TableRowsProps | null>(null);
+const TableGridConfigContext = createContext<TableGridConfigValue | null>(null);
 
-export function useTableGridConfigContext(): TableRowsProps {
+export function useTableGridConfigContext(): TableGridConfigValue {
   const v = useContext(TableGridConfigContext);
   if (v == null) {
     throw new Error('useTableGridConfigContext must be used within TableRows');

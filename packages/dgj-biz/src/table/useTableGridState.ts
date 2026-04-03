@@ -67,5 +67,19 @@ export function useColumnResize(gridMax: number, minTextColW: number) {
     [colWidths, minTextColW]
   );
 
-  return { colWidths, onColumnResizeStart };
+  const removeColumnWidthAt = useCallback(
+    (colIndex: number) => {
+      setColWidths((prev) => {
+        const copy = [...prev];
+        for (let i = colIndex; i < gridMax - 1; i += 1) {
+          copy[i] = copy[i + 1];
+        }
+        copy[gridMax - 1] = null;
+        return copy;
+      });
+    },
+    [gridMax]
+  );
+
+  return { colWidths, onColumnResizeStart, removeColumnWidthAt };
 }

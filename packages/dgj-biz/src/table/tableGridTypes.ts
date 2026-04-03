@@ -26,4 +26,13 @@ export type TableRowsProps = Readonly<{
   onInsertRow: () => void;
   onInsertColumn: () => void;
   insertLayoutTextColPx: number | null;
+  /** 删除列/行时下限（与 demo 的 GRID_MIN 一致），用于禁用右键菜单项 */
+  gridMinCount?: number;
+  onDeleteColumn?: (colIndex: number) => void;
+  onDeleteBodyRow?: (bodyRowIndex: number) => void;
 }>;
+
+export type TableGridConfigValue = TableRowsProps & {
+  deleteColumnAt: (colIndex: number) => void;
+  deleteBodyRowAt: (bodyRowIndex: number) => void;
+};

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Slider, Switch, Typography, dgjTokens } from 'dgj-design';
 import { useColumnResize, useRowSelection } from './table/useTableGridState';
 import TableRows from './table/TableRows';
@@ -23,7 +23,12 @@ export function useTableAreaDemoState() {
   const [enableEditMode, setEnableEditMode] = useState(false);
   const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null);
 
-  const { colWidths, onColumnResizeStart } = useColumnResize(GRID_MAX, MIN_TEXT_COL_W);
+  const colCountRef = useRef(colCount);
+  const rowCountRef = useRef(rowCount);
+  colCountRef.current = colCount;
+  rowCountRef.current = rowCount;
+
+  const { colWidths, onColumnResizeStart, removeColumnWidthAt } = useColumnResize(GRID_MAX, MIN_TEXT_COL_W);
   const bodyRowCount = Math.max(0, rowCount - 1);
   const {
     checkedByBodyRow,
@@ -56,6 +61,30 @@ export function useTableAreaDemoState() {
     setColCount((prev) => Math.min(GRID_MAX, prev + 1));
   }, []);
 
+  const deleteColumn = useCallback(
+    (colIndex: number) => {
+      if (colCountRef.current <= GRID_MIN) return;
+      removeColumnWidthAt(colIndex);
+      setColCount((c) => c - 1);
+    },
+    [removeColumnWidthAt]
+  );
+
+  const deleteBodyRow = useCallback((bodyRowIndex: number) => {
+    if (rowCountRef.current <= GRID_MIN) return;
+    setRowCount((r) => r - 1);
+    setCheckedByBodyRow((prev) => {
+      const next: Record<number, boolean> = {};
+      for (const [ks, v] of Object.entries(prev)) {
+        const i = Number(ks);
+        if (Number.isNaN(i)) continue;
+        if (i < bodyRowIndex) next[i] = v;
+        else if (i > bodyRowIndex) next[i - 1] = v;
+      }
+      return next;
+    });
+  }, []);
+
   return {
     rowCount,
     setRowCount,
@@ -79,6 +108,8 @@ export function useTableAreaDemoState() {
     setEnableEditMode,
     insertRow,
     insertColumn,
+    deleteColumn,
+    deleteBodyRow,
     hoveredRowIndex,
     setHoveredRowIndex,
     checkedByBodyRow,
@@ -216,6 +247,8 @@ export function TableAreaTableInstance(model: TableAreaDemoModel) {
     onColumnResizeStart,
     insertRow,
     insertColumn,
+    deleteColumn,
+    deleteBodyRow,
   } = model;
 
   const rows = (
@@ -245,6 +278,9 @@ export function TableAreaTableInstance(model: TableAreaDemoModel) {
       onInsertRow={insertRow}
       onInsertColumn={insertColumn}
       insertLayoutTextColPx={enableInsertRowCol ? INSERT_MODE_TEXT_COL_PX : null}
+      gridMinCount={GRID_MIN}
+      onDeleteColumn={deleteColumn}
+      onDeleteBodyRow={deleteBodyRow}
     />
   );
 

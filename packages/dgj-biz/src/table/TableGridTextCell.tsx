@@ -1,5 +1,6 @@
-import React from 'react';
-import { DgjIcon, Input, Typography, dgjTokens } from 'dgj-design';
+import React, { useMemo } from 'react';
+import type { MenuProps } from 'antd';
+import { Dropdown, DgjIcon, Input, Typography, dgjTokens } from 'dgj-design';
 import { BizTableCell } from './BizTableCell';
 import { useTableGridConfigContext } from './tableGridConfigContext';
 import { useTableGridEditingContext } from './tableGridEditingContext';
@@ -105,6 +106,192 @@ export default function TableGridTextCell({
     ed.hoverLockedCell?.r === bodyRowIndex &&
     ed.hoverLockedCell?.c === colIndex;
 
+  const gridMin = cfg.gridMinCount ?? 2;
+  const insertModeHeaderContextMenu =
+    cfg.enableInsertRowCol && isHeader && !isInsertColPlaceholder;
+  const insertModeBodyContextMenu =
+    cfg.enableInsertRowCol &&
+    isBody &&
+    !isInsertRowPlaceholder &&
+    !isInsertColPlaceholder &&
+    colIndex < cfg.colCount;
+
+  const contextMenuItems = useMemo((): MenuProps['items'] | undefined => {
+    if (insertModeHeaderContextMenu) {
+      return [
+        {
+          key: 'delete-column',
+          label: '删除列',
+          danger: true,
+          disabled: cfg.colCount <= gridMin,
+          onClick: ({ domEvent }) => {
+            domEvent.stopPropagation();
+            cfg.deleteColumnAt(colIndex);
+          },
+        },
+      ];
+    }
+    if (insertModeBodyContextMenu) {
+      return [
+        {
+          key: 'delete-row',
+          label: '删除行',
+          danger: true,
+          disabled: cfg.rowCount <= gridMin,
+          onClick: ({ domEvent }) => {
+            domEvent.stopPropagation();
+            cfg.deleteBodyRowAt(bodyRowIndex);
+          },
+        },
+      ];
+    }
+    return undefined;
+  }, [
+    insertModeHeaderContextMenu,
+    insertModeBodyContextMenu,
+    cfg.colCount,
+    cfg.rowCount,
+    cfg.deleteColumnAt,
+    cfg.deleteBodyRowAt,
+    colIndex,
+    bodyRowIndex,
+    gridMin,
+  ]);
+
+  const freezeDividers = (
+    <>
+      {cfg.enableFreezeFirstCol && colIndex === 0 ? (
+        <span aria-hidden="true" style={getFreezeDividerStyle('right')} />
+      ) : null}
+      {cfg.enableFreezeLastCol && colIndex === cfg.colCount - 1 ? (
+        <span aria-hidden="true" style={getFreezeDividerStyle('left')} />
+      ) : null}
+    </>
+  );
+
+  const tableCell = (
+    <BizTableCell
+      variant={isHeader ? 'thead' : 'tbody'}
+      hovered={isInsertColPlaceholder && !isHeader ? false : hovered || isHoverLocked}
+      hoverByCell={isHeader}
+      active={cellActive}
+      zoom={canResizeHeaderTextCol}
+      onColumnResizeStart={canResizeHeaderTextCol ? cfg.onColumnResizeStart(colIndex) : undefined}
+      isLastRow={isLastRow}
+      suppressBottomBorder={isInsertColPlaceholder && !isHeader}
+      isFrozen={
+        (cfg.enableFreezeFirstCol && colIndex === 0) ||
+        (cfg.enableFreezeLastCol && colIndex === cfg.colCount - 1) ||
+        (cfg.enableFreezeLastCol && cfg.enableInsertRowCol && isInsertColPlaceholder)
+      }
+      showRightBorder={showTextColRightBorder}
+      compactVerticalContent={isInsertColPlaceholder && isHeader}
+      contentPaddingY={isHeader ? 8 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_Y}
+      contentPaddingX={isHeader ? 12 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_X}
+      contentAlignY={!isHeader && !cfg.enableVerticalCenter ? 'flex-start' : 'center'}
+      style={
+        isEditing
+          ? {
+              maxHeight: EDIT_CELL_MAX_HEIGHT_PX,
+              overflow: 'hidden',
+            }
+          : isEditableBodyDisplayCell
+            ? {
+                maxHeight: DISPLAY_CELL_MAX_HEIGHT_PX,
+                overflow: 'hidden',
+              }
+            : undefined
+      }
+    >
+      {isHeader ? (
+        isInsertColPlaceholder ? (
+          <DgjIcon
+            type="add"
+            fontSize={16}
+            style={{
+              color: dgjTokens.color.neutral.text.icon,
+              lineHeight: 1,
+              display: 'block',
+              cursor: 'pointer',
+            }}
+          />
+        ) : (
+          <Typography.Text style={{ ...tableTextStyle, fontWeight: 500 }}>
+            列 {colIndex + 1}
+          </Typography.Text>
+        )
+      ) : isInsertColPlaceholder ? null : isInsertRowPlaceholder ? null : isEditing ? (
+        <Input.TextArea
+          ref={ed.editTextAreaRef}
+          autoFocus={false}
+          autoSize={{ minRows: 1, maxRows: EDIT_TEXTAREA_MAX_ROWS }}
+          value={ed.editingDraft}
+          onChange={(ev) => {
+            const v = ev.target.value;
+            ed.editingDraftRef.current = v;
+            ed.setEditingDraft(v);
+          }}
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onBlur={() => {
+            ed.setValueByCell((prev) => ({ ...prev, [key]: ed.getEditingValueForSave() }));
+          }}
+          onKeyDown={(e) => {
+            const exit = e.key === 'Escape' || (e.key === 'Enter' && (e.metaKey || e.ctrlKey));
+            if (!exit) return;
+            e.preventDefault();
+            ed.setValueByCell((prev) => ({ ...prev, [key]: ed.getEditingValueForSave() }));
+            ed.setSelectedCell({ r: bodyRowIndex, c: colIndex });
+            ed.setEditingCell(null);
+            ed.editingDraftRef.current = '';
+            ed.setEditingDraft('');
+          }}
+          style={{
+            width: '100%',
+            resize: 'none',
+            transition: 'none',
+            borderRadius: 0,
+          }}
+          styles={{
+            affixWrapper: {
+              transition: 'none',
+              borderRadius: 0,
+            },
+            textarea: {
+              fontSize: 12,
+              lineHeight: '20px',
+              paddingLeft: 8,
+              paddingRight: 8,
+              boxSizing: 'border-box',
+              transition: 'none',
+              borderRadius: 0,
+            },
+          }}
+        />
+      ) : (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            minWidth: 0,
+            height: '100%',
+            justifyContent: cfg.enableVerticalCenter ? 'center' : 'flex-start',
+          }}
+        >
+          <div
+            style={{
+              ...tableTextClampNStyle(EDIT_TEXTAREA_MAX_ROWS),
+              maxHeight: DISPLAY_TEXT_MAX_HEIGHT_PX,
+            }}
+          >
+            {displayText}
+          </div>
+        </div>
+      )}
+    </BizTableCell>
+  );
+
   return (
     <div
       data-insert-col-placeholder={isInsertColPlaceholder && !isHeader ? 'true' : undefined}
@@ -186,132 +373,29 @@ export default function TableGridTextCell({
             }
       }
     >
-      {cfg.enableFreezeFirstCol && colIndex === 0 ? (
-        <span aria-hidden="true" style={getFreezeDividerStyle('right')} />
-      ) : null}
-      {cfg.enableFreezeLastCol && colIndex === cfg.colCount - 1 ? (
-        <span aria-hidden="true" style={getFreezeDividerStyle('left')} />
-      ) : null}
-      <BizTableCell
-        variant={isHeader ? 'thead' : 'tbody'}
-        hovered={isInsertColPlaceholder && !isHeader ? false : hovered || isHoverLocked}
-        hoverByCell={isHeader}
-        active={cellActive}
-        zoom={canResizeHeaderTextCol}
-        onColumnResizeStart={canResizeHeaderTextCol ? cfg.onColumnResizeStart(colIndex) : undefined}
-        isLastRow={isLastRow}
-        suppressBottomBorder={isInsertColPlaceholder && !isHeader}
-        isFrozen={
-          (cfg.enableFreezeFirstCol && colIndex === 0) ||
-          (cfg.enableFreezeLastCol && colIndex === cfg.colCount - 1) ||
-          (cfg.enableFreezeLastCol && cfg.enableInsertRowCol && isInsertColPlaceholder)
-        }
-        showRightBorder={showTextColRightBorder}
-        compactVerticalContent={isInsertColPlaceholder && isHeader}
-        contentPaddingY={isHeader ? 8 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_Y}
-        contentPaddingX={isHeader ? 12 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_X}
-        contentAlignY={!isHeader && !cfg.enableVerticalCenter ? 'flex-start' : 'center'}
-        style={
-          isEditing
-            ? {
-                maxHeight: EDIT_CELL_MAX_HEIGHT_PX,
-                overflow: 'hidden',
-              }
-            : isEditableBodyDisplayCell
-              ? {
-                  maxHeight: DISPLAY_CELL_MAX_HEIGHT_PX,
-                  overflow: 'hidden',
-                }
-              : undefined
-        }
-      >
-        {isHeader ? (
-          isInsertColPlaceholder ? (
-            <DgjIcon
-              type="add"
-              fontSize={16}
-              style={{
-                color: dgjTokens.color.neutral.text.icon,
-                lineHeight: 1,
-                display: 'block',
-                cursor: 'pointer',
-              }}
-            />
-          ) : (
-            <Typography.Text style={{ ...tableTextStyle, fontWeight: 500 }}>
-              列 {colIndex + 1}
-            </Typography.Text>
-          )
-        ) : isInsertColPlaceholder ? null : isInsertRowPlaceholder ? null : isEditing ? (
-          <Input.TextArea
-            ref={ed.editTextAreaRef}
-            autoFocus={false}
-            autoSize={{ minRows: 1, maxRows: EDIT_TEXTAREA_MAX_ROWS }}
-            value={ed.editingDraft}
-            onChange={(ev) => {
-              const v = ev.target.value;
-              ed.editingDraftRef.current = v;
-              ed.setEditingDraft(v);
-            }}
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-            onBlur={() => {
-              ed.setValueByCell((prev) => ({ ...prev, [key]: ed.getEditingValueForSave() }));
-            }}
-            onKeyDown={(e) => {
-              const exit = e.key === 'Escape' || (e.key === 'Enter' && (e.metaKey || e.ctrlKey));
-              if (!exit) return;
-              e.preventDefault();
-              ed.setValueByCell((prev) => ({ ...prev, [key]: ed.getEditingValueForSave() }));
-              ed.setSelectedCell({ r: bodyRowIndex, c: colIndex });
-              ed.setEditingCell(null);
-              ed.editingDraftRef.current = '';
-              ed.setEditingDraft('');
-            }}
-            style={{
-              width: '100%',
-              resize: 'none',
-              transition: 'none',
-              borderRadius: 0,
-            }}
-            styles={{
-              affixWrapper: {
-                transition: 'none',
-                borderRadius: 0,
-              },
-              textarea: {
-                fontSize: 12,
-                lineHeight: '20px',
-                paddingLeft: 8,
-                paddingRight: 8,
-                boxSizing: 'border-box',
-                transition: 'none',
-                borderRadius: 0,
-              },
-            }}
-          />
-        ) : (
+      {contextMenuItems != null ? (
+        <Dropdown menu={{ items: contextMenuItems }} trigger={['contextMenu']}>
           <div
+            role="presentation"
             style={{
               display: 'flex',
-              flexDirection: 'column',
+              flex: 1,
               width: '100%',
               minWidth: 0,
-              height: '100%',
-              justifyContent: cfg.enableVerticalCenter ? 'center' : 'flex-start',
+              alignSelf: 'stretch',
+              minHeight: '100%',
             }}
           >
-            <div
-              style={{
-                ...tableTextClampNStyle(EDIT_TEXTAREA_MAX_ROWS),
-                maxHeight: DISPLAY_TEXT_MAX_HEIGHT_PX,
-              }}
-            >
-              {displayText}
-            </div>
+            {freezeDividers}
+            {tableCell}
           </div>
-        )}
-      </BizTableCell>
+        </Dropdown>
+      ) : (
+        <>
+          {freezeDividers}
+          {tableCell}
+        </>
+      )}
     </div>
   );
 }

@@ -27,6 +27,8 @@ export type TableGridEditingState = {
   } | null>;
   editingDraftRef: MutableRefObject<string>;
   getEditingValueForSave: () => string;
+  removeColumnAt: (colIndex: number) => void;
+  removeBodyRowAt: (bodyRowIndex: number) => void;
 };
 
 export function useTableGridEditing(enableEditMode: boolean): TableGridEditingState {
@@ -62,6 +64,86 @@ export function useTableGridEditing(enableEditMode: boolean): TableGridEditingSt
     editingDraftRef.current = '';
     setEditingDraft('');
   }, [getEditingValueForSave]);
+
+  const removeColumnAt = useCallback((colIndex: number) => {
+    const ec = editingCellRef.current;
+    if (ec?.c === colIndex) {
+      editingDraftRef.current = '';
+      setEditingDraft('');
+    }
+    setValueByCell((prev) => {
+      const next: Record<string, string> = {};
+      for (const [k, v] of Object.entries(prev)) {
+        const parts = k.split('-');
+        if (parts.length !== 2) continue;
+        const r = Number(parts[0]);
+        const c = Number(parts[1]);
+        if (Number.isNaN(r) || Number.isNaN(c)) continue;
+        if (c === colIndex) continue;
+        const nk = c > colIndex ? cellKey(r, c - 1) : k;
+        next[nk] = v;
+      }
+      return next;
+    });
+    setEditingCell((current) => {
+      if (!current) return null;
+      if (current.c === colIndex) return null;
+      if (current.c > colIndex) return { r: current.r, c: current.c - 1 };
+      return current;
+    });
+    setSelectedCell((sc) => {
+      if (!sc) return null;
+      if (sc.c === colIndex) return null;
+      if (sc.c > colIndex) return { r: sc.r, c: sc.c - 1 };
+      return sc;
+    });
+    setHoverLockedCell((hl) => {
+      if (!hl) return null;
+      if (hl.c === colIndex) return null;
+      if (hl.c > colIndex) return { r: hl.r, c: hl.c - 1 };
+      return hl;
+    });
+  }, []);
+
+  const removeBodyRowAt = useCallback((bodyRowIndex: number) => {
+    const ec = editingCellRef.current;
+    if (ec?.r === bodyRowIndex) {
+      editingDraftRef.current = '';
+      setEditingDraft('');
+    }
+    setValueByCell((prev) => {
+      const next: Record<string, string> = {};
+      for (const [k, v] of Object.entries(prev)) {
+        const parts = k.split('-');
+        if (parts.length !== 2) continue;
+        const r = Number(parts[0]);
+        const c = Number(parts[1]);
+        if (Number.isNaN(r) || Number.isNaN(c)) continue;
+        if (r === bodyRowIndex) continue;
+        const nk = r > bodyRowIndex ? cellKey(r - 1, c) : k;
+        next[nk] = v;
+      }
+      return next;
+    });
+    setEditingCell((current) => {
+      if (!current) return null;
+      if (current.r === bodyRowIndex) return null;
+      if (current.r > bodyRowIndex) return { r: current.r - 1, c: current.c };
+      return current;
+    });
+    setSelectedCell((sc) => {
+      if (!sc) return null;
+      if (sc.r === bodyRowIndex) return null;
+      if (sc.r > bodyRowIndex) return { r: sc.r - 1, c: sc.c };
+      return sc;
+    });
+    setHoverLockedCell((hl) => {
+      if (!hl) return null;
+      if (hl.r === bodyRowIndex) return null;
+      if (hl.r > bodyRowIndex) return { r: hl.r - 1, c: hl.c };
+      return hl;
+    });
+  }, []);
 
   useEffect(() => {
     if (!enableEditMode) {
@@ -191,6 +273,8 @@ export function useTableGridEditing(enableEditMode: boolean): TableGridEditingSt
       editTextAreaRef,
       editingDraftRef,
       getEditingValueForSave,
+      removeColumnAt,
+      removeBodyRowAt,
     }),
     [
       selectedCell,
@@ -199,6 +283,8 @@ export function useTableGridEditing(enableEditMode: boolean): TableGridEditingSt
       editingDraft,
       valueByCell,
       getEditingValueForSave,
+      removeColumnAt,
+      removeBodyRowAt,
     ]
   );
 }
