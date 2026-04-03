@@ -22,7 +22,7 @@
     "demo": "npm run build && npm run build:dgj-biz && cd demo && npm install && npm run dev",
     "page-case:extract": "node scripts/extract_figma_page_case.mjs",
     "lint": "echo \"no linter configured\"",
-    "test": "echo \"no tests yet\"",
+    "test": "npm run test -w dgj-biz",
     "prepare": "npm run build",
     "prepublishOnly": "npm run clean && npm run build",
     "release:patch": "npm version patch && npm publish",
