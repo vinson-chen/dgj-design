@@ -1,7 +1,8 @@
 import React from 'react';
 import { DgjIcon, Input, Typography, dgjTokens } from 'dgj-design';
 import { BizTableCell } from './BizTableCell';
-import { useTableGridContext } from './TableGridContext';
+import { useTableGridConfigContext } from './tableGridConfigContext';
+import { useTableGridEditingContext } from './tableGridEditingContext';
 import {
   BODY_CELL_PADDING_X,
   BODY_CELL_PADDING_Y,
@@ -37,65 +38,66 @@ export default function TableGridTextCell({
   active,
   isInsertRowPlaceholder,
 }: TableGridTextCellProps) {
-  const p = useTableGridContext();
+  const cfg = useTableGridConfigContext();
+  const ed = useTableGridEditingContext();
 
-  const insertColWidth = p.narrowWidth;
-  const isInsertColPlaceholder = p.enableInsertRowCol && colIndex === p.colCount;
+  const insertColWidth = cfg.narrowWidth;
+  const isInsertColPlaceholder = cfg.enableInsertRowCol && colIndex === cfg.colCount;
   const isInsertRowTextClickable =
-    isInsertRowPlaceholder && !isInsertColPlaceholder && !isHeader && colIndex < p.colCount;
+    isInsertRowPlaceholder && !isInsertColPlaceholder && !isHeader && colIndex < cfg.colCount;
 
-  const storedW = p.enableColumnResize ? p.colWidths[colIndex] ?? null : null;
+  const storedW = cfg.enableColumnResize ? cfg.colWidths[colIndex] ?? null : null;
   const layoutW: number | null =
-    p.insertLayoutTextColPx != null
+    cfg.insertLayoutTextColPx != null
       ? storedW != null
         ? storedW
-        : p.insertLayoutTextColPx
+        : cfg.insertLayoutTextColPx
       : storedW;
 
   const isLastTextColBeforeInsert =
-    p.enableInsertRowCol && !isHeader && colIndex === p.colCount - 1;
+    cfg.enableInsertRowCol && !isHeader && colIndex === cfg.colCount - 1;
 
   const shouldHideRightBorderForFrozenLastCol =
-    p.enableFreezeLastCol && !p.enableInsertRowCol && colIndex === p.colCount - 1;
+    cfg.enableFreezeLastCol && !cfg.enableInsertRowCol && colIndex === cfg.colCount - 1;
 
   const shouldHideRightBorderForLastUnfrozenBeforeFrozenLast =
-    p.enableFreezeLastCol &&
-    p.enableBodyCellRightBorder &&
-    p.colCount >= 2 &&
-    colIndex === p.colCount - 2;
+    cfg.enableFreezeLastCol &&
+    cfg.enableBodyCellRightBorder &&
+    cfg.colCount >= 2 &&
+    colIndex === cfg.colCount - 2;
 
-  const canResizeHeaderTextCol = isHeader && p.enableColumnResize && colIndex < p.colCount;
+  const canResizeHeaderTextCol = isHeader && cfg.enableColumnResize && colIndex < cfg.colCount;
 
   const isBody = rowIndex > 0;
   const isEditableBodyCell =
-    p.enableEditMode &&
+    cfg.enableEditMode &&
     isBody &&
     !isInsertRowPlaceholder &&
-    colIndex < p.colCount &&
+    colIndex < cfg.colCount &&
     !isInsertColPlaceholder;
   const isEditing =
     isEditableBodyCell &&
-    !!p.editingCell &&
-    p.editingCell.r === bodyRowIndex &&
-    p.editingCell.c === colIndex;
+    !!ed.editingCell &&
+    ed.editingCell.r === bodyRowIndex &&
+    ed.editingCell.c === colIndex;
   const key = cellKey(bodyRowIndex, colIndex);
-  const displayText = p.valueByCell[key] ?? `R${bodyRowIndex + 1} C${colIndex + 1}`;
+  const displayText = ed.valueByCell[key] ?? `R${bodyRowIndex + 1} C${colIndex + 1}`;
   const cellActive = isInsertColPlaceholder ? false : active;
   const isEditableBodyDisplayCell =
-    isBody && !isInsertRowPlaceholder && !isInsertColPlaceholder && colIndex < p.colCount;
+    isBody && !isInsertRowPlaceholder && !isInsertColPlaceholder && colIndex < cfg.colCount;
   const isHoverLocked =
-    p.enableEditMode &&
+    cfg.enableEditMode &&
     isBody &&
     !isInsertRowPlaceholder &&
     !isInsertColPlaceholder &&
-    colIndex < p.colCount &&
-    p.hoverLockedCell?.r === bodyRowIndex &&
-    p.hoverLockedCell?.c === colIndex;
+    colIndex < cfg.colCount &&
+    ed.hoverLockedCell?.r === bodyRowIndex &&
+    ed.hoverLockedCell?.c === colIndex;
 
   return (
     <div
       data-insert-col-placeholder={isInsertColPlaceholder && !isHeader ? 'true' : undefined}
-      data-hover-lock-cell={isEditableBodyDisplayCell && p.enableEditMode ? '' : undefined}
+      data-hover-lock-cell={isEditableBodyDisplayCell && cfg.enableEditMode ? '' : undefined}
       data-body-row={isEditableBodyDisplayCell ? bodyRowIndex : undefined}
       data-col={isEditableBodyDisplayCell ? colIndex : undefined}
       onClick={(e) => {
@@ -105,36 +107,36 @@ export default function TableGridTextCell({
         }
         if (isHeader && isInsertColPlaceholder) {
           e.stopPropagation();
-          p.onInsertColumn();
+          cfg.onInsertColumn();
           return;
         }
         if (
-          p.enableEditMode &&
+          cfg.enableEditMode &&
           isBody &&
           !isInsertRowPlaceholder &&
           !isInsertColPlaceholder &&
-          colIndex < p.colCount
+          colIndex < cfg.colCount
         ) {
-          p.setHoverLockedCell({ r: bodyRowIndex, c: colIndex });
+          ed.setHoverLockedCell({ r: bodyRowIndex, c: colIndex });
         }
         if (isEditableBodyCell) {
           e.stopPropagation();
-          p.setSelectedCell(null);
-          if (p.editingCell?.r === bodyRowIndex && p.editingCell?.c === colIndex) {
+          ed.setSelectedCell(null);
+          if (ed.editingCell?.r === bodyRowIndex && ed.editingCell?.c === colIndex) {
             return;
           }
-          if (p.editingCell && (p.editingCell.r !== bodyRowIndex || p.editingCell.c !== colIndex)) {
-            const prevKey = cellKey(p.editingCell.r, p.editingCell.c);
-            p.setValueByCell((v) => ({ ...v, [prevKey]: p.getEditingValueForSave() }));
+          if (ed.editingCell && (ed.editingCell.r !== bodyRowIndex || ed.editingCell.c !== colIndex)) {
+            const prevKey = cellKey(ed.editingCell.r, ed.editingCell.c);
+            ed.setValueByCell((v) => ({ ...v, [prevKey]: ed.getEditingValueForSave() }));
           }
-          p.setEditingCell({ r: bodyRowIndex, c: colIndex });
-          p.editingDraftRef.current = displayText;
-          p.setEditingDraft(displayText);
+          ed.setEditingCell({ r: bodyRowIndex, c: colIndex });
+          ed.editingDraftRef.current = displayText;
+          ed.setEditingDraft(displayText);
           return;
         }
         if (!isInsertRowTextClickable) return;
         e.stopPropagation();
-        p.onInsertRow();
+        cfg.onInsertRow();
       }}
       style={
         isInsertColPlaceholder
@@ -143,26 +145,26 @@ export default function TableGridTextCell({
               minWidth: insertColWidth,
               display: 'flex',
               position:
-                p.enableFreezeLastCol && p.enableInsertRowCol
+                cfg.enableFreezeLastCol && cfg.enableInsertRowCol
                   ? 'sticky'
-                  : p.enableFreezeFirstCol && colIndex === 0
+                  : cfg.enableFreezeFirstCol && colIndex === 0
                     ? 'sticky'
                     : undefined,
-              left: p.enableFreezeFirstCol && colIndex === 0 ? p.narrowWidth : undefined,
-              right: p.enableFreezeLastCol && p.enableInsertRowCol ? 0 : undefined,
-              zIndex: p.enableFreezeLastCol && p.enableInsertRowCol ? 5 : undefined,
+              left: cfg.enableFreezeFirstCol && colIndex === 0 ? cfg.narrowWidth : undefined,
+              right: cfg.enableFreezeLastCol && cfg.enableInsertRowCol ? 0 : undefined,
+              zIndex: cfg.enableFreezeLastCol && cfg.enableInsertRowCol ? 5 : undefined,
               cursor: isHeader ? 'pointer' : 'default',
             }
           : {
               ...getTextColWrapStyle(
                 layoutW,
-                p.minTextColWidth,
-                p.narrowWidth,
+                cfg.minTextColWidth,
+                cfg.narrowWidth,
                 colIndex,
-                p.colCount,
-                p.enableFreezeFirstCol,
-                p.enableFreezeLastCol,
-                p.enableInsertRowCol && p.enableFreezeLastCol ? p.narrowWidth : 0
+                cfg.colCount,
+                cfg.enableFreezeFirstCol,
+                cfg.enableFreezeLastCol,
+                cfg.enableInsertRowCol && cfg.enableFreezeLastCol ? cfg.narrowWidth : 0
               ),
               cursor:
                 isInsertRowTextClickable || (isHeader && isInsertColPlaceholder)
@@ -173,10 +175,10 @@ export default function TableGridTextCell({
             }
       }
     >
-      {p.enableFreezeFirstCol && colIndex === 0 ? (
+      {cfg.enableFreezeFirstCol && colIndex === 0 ? (
         <span aria-hidden="true" style={getFreezeDividerStyle('right')} />
       ) : null}
-      {p.enableFreezeLastCol && colIndex === p.colCount - 1 ? (
+      {cfg.enableFreezeLastCol && colIndex === cfg.colCount - 1 ? (
         <span aria-hidden="true" style={getFreezeDividerStyle('left')} />
       ) : null}
       <BizTableCell
@@ -185,27 +187,27 @@ export default function TableGridTextCell({
         hoverByCell={isHeader}
         active={cellActive}
         zoom={canResizeHeaderTextCol}
-        onColumnResizeStart={canResizeHeaderTextCol ? p.onColumnResizeStart(colIndex) : undefined}
+        onColumnResizeStart={canResizeHeaderTextCol ? cfg.onColumnResizeStart(colIndex) : undefined}
         isLastRow={isHeader || !isInsertColPlaceholder ? isLastRow : true}
         isFrozen={
-          (p.enableFreezeFirstCol && colIndex === 0) ||
-          (p.enableFreezeLastCol && colIndex === p.colCount - 1) ||
-          (p.enableFreezeLastCol && p.enableInsertRowCol && isInsertColPlaceholder)
+          (cfg.enableFreezeFirstCol && colIndex === 0) ||
+          (cfg.enableFreezeLastCol && colIndex === cfg.colCount - 1) ||
+          (cfg.enableFreezeLastCol && cfg.enableInsertRowCol && isInsertColPlaceholder)
         }
         showRightBorder={
           !isHeader &&
           !isInsertColPlaceholder &&
-          !(p.enableFreezeFirstCol && colIndex === 0) &&
+          !(cfg.enableFreezeFirstCol && colIndex === 0) &&
           (isLastTextColBeforeInsert
             ? true
-            : p.enableBodyCellRightBorder &&
+            : cfg.enableBodyCellRightBorder &&
               !isInsertRowPlaceholder &&
               !shouldHideRightBorderForFrozenLastCol &&
               !shouldHideRightBorderForLastUnfrozenBeforeFrozenLast)
         }
         contentPaddingY={isHeader ? 8 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_Y}
         contentPaddingX={isHeader ? 12 : isEditing ? EDIT_CELL_EDGE_PADDING : BODY_CELL_PADDING_X}
-        contentAlignY={!isHeader && !p.enableVerticalCenter ? 'flex-start' : 'center'}
+        contentAlignY={!isHeader && !cfg.enableVerticalCenter ? 'flex-start' : 'center'}
         style={
           isEditing
             ? {
@@ -234,29 +236,29 @@ export default function TableGridTextCell({
           )
         ) : isInsertColPlaceholder ? null : isInsertRowPlaceholder ? null : isEditing ? (
           <Input.TextArea
-            ref={p.editTextAreaRef}
+            ref={ed.editTextAreaRef}
             autoFocus={false}
             autoSize={{ minRows: 1, maxRows: EDIT_TEXTAREA_MAX_ROWS }}
-            value={p.editingDraft}
+            value={ed.editingDraft}
             onChange={(ev) => {
               const v = ev.target.value;
-              p.editingDraftRef.current = v;
-              p.setEditingDraft(v);
+              ed.editingDraftRef.current = v;
+              ed.setEditingDraft(v);
             }}
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             onBlur={() => {
-              p.setValueByCell((prev) => ({ ...prev, [key]: p.getEditingValueForSave() }));
+              ed.setValueByCell((prev) => ({ ...prev, [key]: ed.getEditingValueForSave() }));
             }}
             onKeyDown={(e) => {
               const exit = e.key === 'Escape' || (e.key === 'Enter' && (e.metaKey || e.ctrlKey));
               if (!exit) return;
               e.preventDefault();
-              p.setValueByCell((prev) => ({ ...prev, [key]: p.getEditingValueForSave() }));
-              p.setSelectedCell({ r: bodyRowIndex, c: colIndex });
-              p.setEditingCell(null);
-              p.editingDraftRef.current = '';
-              p.setEditingDraft('');
+              ed.setValueByCell((prev) => ({ ...prev, [key]: ed.getEditingValueForSave() }));
+              ed.setSelectedCell({ r: bodyRowIndex, c: colIndex });
+              ed.setEditingCell(null);
+              ed.editingDraftRef.current = '';
+              ed.setEditingDraft('');
             }}
             style={{
               width: '100%',
@@ -288,7 +290,7 @@ export default function TableGridTextCell({
               width: '100%',
               minWidth: 0,
               height: '100%',
-              justifyContent: p.enableVerticalCenter ? 'center' : 'flex-start',
+              justifyContent: cfg.enableVerticalCenter ? 'center' : 'flex-start',
             }}
           >
             <div

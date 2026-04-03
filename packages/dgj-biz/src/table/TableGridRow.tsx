@@ -2,24 +2,24 @@ import React from 'react';
 import { Checkbox, DgjIcon, Typography, dgjTokens } from 'dgj-design';
 import { BizTableCell } from './BizTableCell';
 import TableGridTextCell from './TableGridTextCell';
-import { useTableGridContext } from './TableGridContext';
+import { useTableGridConfigContext } from './tableGridConfigContext';
 import { tableTextStyle } from './tableGridConstants';
 
 export type TableGridRowProps = Readonly<{ rowIndex: number }>;
 
 export default function TableGridRow({ rowIndex }: TableGridRowProps) {
-  const p = useTableGridContext();
+  const cfg = useTableGridConfigContext();
 
-  const displayRowCount = p.rowCount + (p.enableInsertRowCol ? 1 : 0);
-  const displayColCount = p.colCount + (p.enableInsertRowCol ? 1 : 0);
-  const isInsertRowPlaceholderIndex = (r: number) => p.enableInsertRowCol && r === p.rowCount;
+  const displayRowCount = cfg.rowCount + (cfg.enableInsertRowCol ? 1 : 0);
+  const displayColCount = cfg.colCount + (cfg.enableInsertRowCol ? 1 : 0);
+  const isInsertRowPlaceholderIndex = (r: number) => cfg.enableInsertRowCol && r === cfg.rowCount;
 
   const isHeader = rowIndex === 0;
   const isLastRow = rowIndex === displayRowCount - 1;
-  const hovered = p.hoveredRowIndex === rowIndex;
+  const hovered = cfg.hoveredRowIndex === rowIndex;
   const bodyRowIndex = rowIndex - 1;
   const isInsertRowPlaceholder = isInsertRowPlaceholderIndex(rowIndex);
-  const active = !isHeader && !isInsertRowPlaceholder && !!p.checkedByBodyRow[bodyRowIndex];
+  const active = !isHeader && !isInsertRowPlaceholder && !!cfg.checkedByBodyRow[bodyRowIndex];
 
   return (
     <div
@@ -27,20 +27,20 @@ export default function TableGridRow({ rowIndex }: TableGridRowProps) {
       onMouseEnter={(e) => {
         const target = e.target as HTMLElement | null;
         const enteredInsertCol =
-          p.enableInsertRowCol &&
+          cfg.enableInsertRowCol &&
           rowIndex > 0 &&
           !!target?.closest('[data-insert-col-placeholder="true"]');
         if (enteredInsertCol) {
-          p.setHoveredRowIndex(null);
+          cfg.setHoveredRowIndex(null);
           return;
         }
-        p.setHoveredRowIndex(rowIndex);
+        cfg.setHoveredRowIndex(rowIndex);
       }}
-      onMouseLeave={() => p.setHoveredRowIndex(null)}
+      onMouseLeave={() => cfg.setHoveredRowIndex(null)}
       onClick={() => {
-        if (p.enableEditMode) return;
+        if (cfg.enableEditMode) return;
         if (!isHeader && !isInsertRowPlaceholder) {
-          p.setCheckedByBodyRow((prev) => ({
+          cfg.setCheckedByBodyRow((prev) => ({
             ...prev,
             [bodyRowIndex]: !prev[bodyRowIndex],
           }));
@@ -49,29 +49,29 @@ export default function TableGridRow({ rowIndex }: TableGridRowProps) {
       style={{
         display: 'flex',
         width: '100%',
-        minWidth: p.rowMinWidth,
+        minWidth: cfg.rowMinWidth,
         alignItems: 'stretch',
         cursor: isHeader || isInsertRowPlaceholder ? 'default' : 'pointer',
       }}
     >
       <div
         onClick={(e) => {
-          if (!p.enableEditMode) return;
+          if (!cfg.enableEditMode) return;
           if (isHeader || isInsertRowPlaceholder) return;
           e.stopPropagation();
-          p.setCheckedByBodyRow((prev) => ({
+          cfg.setCheckedByBodyRow((prev) => ({
             ...prev,
             [bodyRowIndex]: !prev[bodyRowIndex],
           }));
         }}
         style={{
-          flex: `0 0 ${p.narrowWidth}px`,
-          minWidth: p.narrowWidth,
+          flex: `0 0 ${cfg.narrowWidth}px`,
+          minWidth: cfg.narrowWidth,
           display: 'flex',
           alignItems: 'stretch',
-          position: p.enableFreezeFirstCol ? 'sticky' : undefined,
-          left: p.enableFreezeFirstCol ? 0 : undefined,
-          zIndex: p.enableFreezeFirstCol ? 4 : undefined,
+          position: cfg.enableFreezeFirstCol ? 'sticky' : undefined,
+          left: cfg.enableFreezeFirstCol ? 0 : undefined,
+          zIndex: cfg.enableFreezeFirstCol ? 4 : undefined,
         }}
       >
         <BizTableCell
@@ -80,23 +80,23 @@ export default function TableGridRow({ rowIndex }: TableGridRowProps) {
           hoverByCell={isHeader}
           active={active}
           isLastRow={isLastRow}
-          isFrozen={p.enableFreezeFirstCol}
+          isFrozen={cfg.enableFreezeFirstCol}
           showRightBorder={
             !isHeader &&
-            p.enableBodyCellRightBorder &&
-            !p.enableFreezeFirstCol &&
+            cfg.enableBodyCellRightBorder &&
+            !cfg.enableFreezeFirstCol &&
             !isInsertRowPlaceholder
           }
           contentPaddingY={8}
-          contentAlignY={!isHeader && !p.enableVerticalCenter ? 'flex-start' : 'center'}
+          contentAlignY={!isHeader && !cfg.enableVerticalCenter ? 'flex-start' : 'center'}
         >
           {isHeader ? (
             <Checkbox
-              checked={p.headerAllChecked}
-              indeterminate={p.headerIndeterminate}
+              checked={cfg.headerAllChecked}
+              indeterminate={cfg.headerIndeterminate}
               onChange={(e) => {
                 e.stopPropagation();
-                p.toggleAllHeader(e.target.checked);
+                cfg.toggleAllHeader(e.target.checked);
               }}
               onClick={(e) => e.stopPropagation()}
               style={{ margin: 0, padding: 0, height: 20, lineHeight: '20px' }}
@@ -108,19 +108,19 @@ export default function TableGridRow({ rowIndex }: TableGridRowProps) {
               style={{ display: 'flex', justifyContent: 'center', width: '100%', cursor: 'pointer' }}
               onClick={(e) => {
                 e.stopPropagation();
-                p.onInsertRow();
+                cfg.onInsertRow();
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   e.stopPropagation();
-                  p.onInsertRow();
+                  cfg.onInsertRow();
                 }
               }}
             >
               <DgjIcon type="add" fontSize={16} style={{ color: dgjTokens.color.neutral.text.icon }} />
             </div>
-          ) : p.enableShowRowIndex && !hovered && !active ? (
+          ) : cfg.enableShowRowIndex && !hovered && !active ? (
             <Typography.Text
               type="secondary"
               style={{
@@ -134,10 +134,10 @@ export default function TableGridRow({ rowIndex }: TableGridRowProps) {
             </Typography.Text>
           ) : (
             <Checkbox
-              checked={!!p.checkedByBodyRow[bodyRowIndex]}
+              checked={!!cfg.checkedByBodyRow[bodyRowIndex]}
               onChange={(e) => {
                 e.stopPropagation();
-                p.setCheckedByBodyRow((prev) => ({ ...prev, [bodyRowIndex]: e.target.checked }));
+                cfg.setCheckedByBodyRow((prev) => ({ ...prev, [bodyRowIndex]: e.target.checked }));
               }}
               onClick={(e) => e.stopPropagation()}
               style={{ margin: 0, padding: 0, height: 20, lineHeight: '20px' }}

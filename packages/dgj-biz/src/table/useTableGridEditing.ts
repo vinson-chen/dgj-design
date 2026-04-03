@@ -1,5 +1,5 @@
 import type { Dispatch, MutableRefObject, RefObject, SetStateAction } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { cellKey } from './tableGridConstants';
 
 function getNativeTextareaFromAntdRef(
@@ -176,19 +176,29 @@ export function useTableGridEditing(enableEditMode: boolean): TableGridEditingSt
     return () => window.removeEventListener('keydown', onKeyDown, true);
   }, [enableEditMode, selectedCell, editingCell, getEditingValueForSave]);
 
-  return {
-    selectedCell,
-    setSelectedCell,
-    hoverLockedCell,
-    setHoverLockedCell,
-    editingCell,
-    setEditingCell,
-    editingDraft,
-    setEditingDraft,
-    valueByCell,
-    setValueByCell,
-    editTextAreaRef,
-    editingDraftRef,
-    getEditingValueForSave,
-  };
+  return useMemo(
+    () => ({
+      selectedCell,
+      setSelectedCell,
+      hoverLockedCell,
+      setHoverLockedCell,
+      editingCell,
+      setEditingCell,
+      editingDraft,
+      setEditingDraft,
+      valueByCell,
+      setValueByCell,
+      editTextAreaRef,
+      editingDraftRef,
+      getEditingValueForSave,
+    }),
+    [
+      selectedCell,
+      hoverLockedCell,
+      editingCell,
+      editingDraft,
+      valueByCell,
+      getEditingValueForSave,
+    ]
+  );
 }
